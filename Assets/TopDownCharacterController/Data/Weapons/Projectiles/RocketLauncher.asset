@@ -1,0 +1,45 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 157c40ea163640b42873c147a0ad6963, type: 3}
+  m_Name: RocketLauncher
+  m_EditorClassIdentifier: 
+  Title: Rocket Launcher
+  Description: Launches explosive projectiles dealing high area damage.
+  WorldSprite: {fileID: -1594147014, guid: 8f78da3182652b044bbf34dfb624effc, type: 3}
+  UISprite: {fileID: 21300000, guid: 4051bbcce7e0f1e40bede1a8c684bf7e, type: 3}
+  ShootSound: {fileID: 8300000, guid: 4719b33cf7702df45b3c4cc95ce11b0a, type: 3}
+  Crosshair: {fileID: 21300000, guid: c23b6a40a8dc0ed4196053ef9e7e271f, type: 3}
+  Damage: 100
+  FireRate: 0.8
+  Distance: 120
+  MinRecoil: 0
+  MaxRecoil: 1
+  RecoilIncreasePerShot: 1
+  RecoilDecreaseSpeed: 5
+  RecoilDecayDelay: 0.3
+  IsAutomatic: 0
+  PelletsPerShot: 1
+  ShotsPerTrigger: 1
+  PierceCount: 3
+  MagazineSize: 1
+  ReloadTime: 3.5
+  IsProjectile: 1
+  ProjectilePrefab: {fileID: 7713103402055621080, guid: 9b1431d0d31bc7548b77cc745ba8a01b, type: 3}
+  ProjectileSpeed: 40
+  ProjectileLifetime: 5
+  EnemyLayers:
+    serializedVersion: 2
+    m_Bits: 128
+  WallLayers:
+    serializedVersion: 2
+    m_Bits: 256
+  ImpactEffects: {fileID: 11400000, guid: 947a3614bd560fe489cbbe00f48255c5, type: 2}
