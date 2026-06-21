@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using UnityEngine;
+using Photon.Pun;
 
 [RequireComponent(typeof(AudioSource))]
 public class WeaponController : MonoBehaviour
@@ -33,6 +34,14 @@ public class WeaponController : MonoBehaviour
 
     private IEnumerator _reloadIEnumerator;
 
+    private PhotonView _view;
+
+    private void Awake()
+    {
+        // This looks at the player prefab and finds the network view you attached earlier
+        _view = GetComponentInParent<PhotonView>();
+    }
+
     private void Update()
     {
         HandleInput();
@@ -43,6 +52,9 @@ public class WeaponController : MonoBehaviour
 
     private void HandleInput()
     {
+        // ADD THIS: If there is a network view, and we do NOT own it, ignore the mouse!
+        if (_view != null && !_view.IsMine) return;
+
         if (!CanShoot()) return;
 
         bool shouldShoot = Weapon.Stats.IsAutomatic
