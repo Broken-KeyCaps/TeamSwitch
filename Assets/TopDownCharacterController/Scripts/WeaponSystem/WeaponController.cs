@@ -26,6 +26,7 @@ public class WeaponController : MonoBehaviour
 
     [Header("Settings")]
     [SerializeField] private float _debugRecoilDistance = 3f;
+    [SerializeField] private WeaponStats _defaultWeaponStats;
 
     private float _lastShotTime;
     private float _recoil;
@@ -38,12 +39,22 @@ public class WeaponController : MonoBehaviour
 
     private void Awake()
     {
-        // This looks at the player prefab and finds the network view you attached earlier
         _view = GetComponentInParent<PhotonView>();
+    }
+
+    private void Start()
+    {
+        if (_defaultWeaponStats != null)
+        {
+            SetWeapon(new WeaponInstance(_defaultWeaponStats));
+        }
     }
 
     private void Update()
     {
+        // Safeguard check to avoid errors if weapon stats haven't initialized yet
+        if (Weapon == null || Weapon.Stats == null) return;
+
         HandleInput();
         UpdateCooldown();
         UpdateRecoil();
@@ -52,7 +63,6 @@ public class WeaponController : MonoBehaviour
 
     private void HandleInput()
     {
-        // ADD THIS: If there is a network view, and we do NOT own it, ignore the mouse!
         if (_view != null && !_view.IsMine) return;
 
         if (!CanShoot()) return;
@@ -130,7 +140,7 @@ public class WeaponController : MonoBehaviour
     private void FireRaycast()
     {
         Vector3 start = _aimOrigin.position;
-        Vector3 forward = ApplySpread(_aimOrigin.right);
+        Vector3 forward = ApplySpread(-_aimOrigin.up);
 
         RaycastHit2D[] hits = Physics2D.RaycastAll(start, forward, Weapon.Stats.Distance);
         Vector3 lastHitPoint = start + forward * Weapon.Stats.Distance;
@@ -166,7 +176,9 @@ public class WeaponController : MonoBehaviour
 
         if (Weapon.Stats.ProjectilePrefab != null && _muzzlePoint != null)
         {
-            Quaternion rotation = Quaternion.LookRotation(Vector3.forward, forward);
+            // FIXED: Replaced 3D LookRotation with native 2D Z-angle calculation
+            float angle = Mathf.Atan2(forward.y, forward.x) * Mathf.Rad2Deg;
+            Quaternion rotation = Quaternion.Euler(0, 0, angle-90f);
             GameObject tracer = Instantiate(Weapon.Stats.ProjectilePrefab, _muzzlePoint.position, rotation);
 
             BulletMover mover = tracer.GetComponent<BulletMover>();
@@ -212,9 +224,11 @@ public class WeaponController : MonoBehaviour
             return;
 
         Vector3 start = _muzzlePoint.position;
-        Vector3 forward = ApplySpread(_aimOrigin.right);
+        Vector3 forward = ApplySpread(-_aimOrigin.up);
 
-        Quaternion rotation = Quaternion.LookRotation(Vector3.forward, forward);
+        // FIXED: Replaced 3D LookRotation with native 2D Z-angle calculation
+        float angle = Mathf.Atan2(forward.y, forward.x) * Mathf.Rad2Deg;
+        Quaternion rotation = Quaternion.Euler(0, 0, angle -90f);
         GameObject projectile = Instantiate(Weapon.Stats.ProjectilePrefab, start, rotation);
 
         Rigidbody2D rb = projectile.GetComponent<Rigidbody2D>();
@@ -247,7 +261,7 @@ public class WeaponController : MonoBehaviour
     {
         float distance = _debugRecoilDistance;
         Vector3 start = _aimOrigin.position;
-        Vector3 forward = _aimOrigin.right;
+        Vector3 forward = -_aimOrigin.up;
 
         Debug.DrawLine(start, start + forward * distance, Color.white);
 
@@ -263,7 +277,7 @@ public class WeaponController : MonoBehaviour
 
     public void SetWeapon(WeaponInstance weapon)
     {
-        if (Weapon == null) return;
+        if (weapon == null) return;
 
         Weapon = weapon;
 
@@ -272,8 +286,7 @@ public class WeaponController : MonoBehaviour
 
         if (_reloadIEnumerator != null)
         {
-            StopCoroutine(_reloadIEnumerator);
-            _reloadIEnumerator = null;
+            MainWindowStoreStop();
         }
 
         if (_weaponSprite && Weapon.Stats.WorldSprite != null)
@@ -291,6 +304,12 @@ public class WeaponController : MonoBehaviour
         }
 
         CheckReload();
+    }
+
+    private void MainWindowStoreStop()
+    {
+        StopCoroutine(_reloadIEnumerator);
+        _reloadIEnumerator = null;
     }
 
     private void CheckReload()

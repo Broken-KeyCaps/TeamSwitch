@@ -107,6 +107,8 @@ public class PlayerController : MonoBehaviourPun
 
         Vector3 lookDir = mousePos - transform.position;
         float angle = Mathf.Atan2(lookDir.y, lookDir.x) * Mathf.Rad2Deg;
-        _bodyRoot.rotation = Quaternion.Euler(0f, 0f, angle - 90f);
+
+        
+        _bodyRoot.rotation = Quaternion.Euler(0f, 0f, angle + 90f);
     }
 }
