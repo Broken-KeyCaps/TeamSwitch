@@ -42,6 +42,8 @@ MonoBehaviour:
   - RPC_TakeDamage
   - RPC_EscapeTie
   - RPC_GetTiedUp
+  - RPC_SetCarryState
+  - RPC_ForceDropPosition
   DisableAutoOpenWizard: 1
   ShowSettings: 0
   DevRegionSetOnce: 0
