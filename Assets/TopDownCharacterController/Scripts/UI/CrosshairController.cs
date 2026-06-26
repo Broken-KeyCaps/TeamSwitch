@@ -1,29 +1,35 @@
 using UnityEngine;
-using UnityEngine.UI;
 
 public class CrosshairController : MonoBehaviour
 {
-    private Image _crosshairImage;
+    private SpriteRenderer _spriteRenderer;
 
     private void Awake()
     {
-        _crosshairImage = GetComponent<Image>();
+        _spriteRenderer = GetComponent<SpriteRenderer>();
     }
 
     private void Update()
     {
-        if (_crosshairImage != null)
+        if (_spriteRenderer != null)
         {
-            Vector3 mousePos = Input.mousePosition;
-            _crosshairImage.rectTransform.position = mousePos;
+            
+            Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            mousePos.z = 0f; 
+
+            
+            transform.position = mousePos;
         }
     }
 
     public void SetCrosshairSprite(Sprite crosshairSprite)
     {
-        if (_crosshairImage != null)
+        
+        if (_spriteRenderer == null) _spriteRenderer = GetComponent<SpriteRenderer>();
+
+        if (_spriteRenderer != null)
         {
-            _crosshairImage.sprite = crosshairSprite;
+            _spriteRenderer.sprite = crosshairSprite;
         }
     }
 }

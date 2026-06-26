@@ -31,7 +31,17 @@ public class PlayerController : MonoBehaviourPun
 
     private void Start()
     {
-        if (photonView.IsMine) Cursor.visible = false;
+        if (photonView.IsMine)
+        {
+            Cursor.visible = false;
+
+            
+            FollowCamera mainCam = Camera.main.GetComponent<FollowCamera>();
+            if (mainCam != null)
+            {
+                mainCam.target = this.gameObject;
+            }
+        }
     }
 
     private void Update()

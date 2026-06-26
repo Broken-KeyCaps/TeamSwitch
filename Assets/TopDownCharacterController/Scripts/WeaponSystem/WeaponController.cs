@@ -26,7 +26,10 @@ public class WeaponController : MonoBehaviour
 
     [Header("Settings")]
     [SerializeField] private float _debugRecoilDistance = 3f;
-    [SerializeField] private WeaponStats _defaultWeaponStats;
+
+    [Header("Weapon Switching")]
+    [SerializeField] private WeaponStats _pistolStats;   
+    [SerializeField] private WeaponStats _netGunStats;   
 
     private float _lastShotTime;
     private float _recoil;
@@ -44,15 +47,25 @@ public class WeaponController : MonoBehaviour
 
     private void Start()
     {
-        if (_defaultWeaponStats != null)
+        
+        if (_view != null && !_view.IsMine)
         {
-            SetWeapon(new WeaponInstance(_defaultWeaponStats));
+            if (_crosshairController != null)
+            {
+                _crosshairController.gameObject.SetActive(false);
+            }
+        }
+
+        
+        if (_pistolStats != null)
+        {
+            SetWeapon(new WeaponInstance(_pistolStats));
         }
     }
 
     private void Update()
     {
-        // Safeguard check to avoid errors if weapon stats haven't initialized yet
+        
         if (Weapon == null || Weapon.Stats == null) return;
 
         HandleInput();
@@ -64,6 +77,17 @@ public class WeaponController : MonoBehaviour
     private void HandleInput()
     {
         if (_view != null && !_view.IsMine) return;
+
+        
+        if (Input.GetKeyDown(KeyCode.Alpha1) && _pistolStats != null)
+        {
+            SetWeapon(new WeaponInstance(_pistolStats));
+        }
+        else if (Input.GetKeyDown(KeyCode.Alpha2) && _netGunStats != null)
+        {
+            SetWeapon(new WeaponInstance(_netGunStats));
+        }
+        
 
         if (!CanShoot()) return;
 
@@ -176,9 +200,8 @@ public class WeaponController : MonoBehaviour
 
         if (Weapon.Stats.ProjectilePrefab != null && _muzzlePoint != null)
         {
-            // FIXED: Replaced 3D LookRotation with native 2D Z-angle calculation
             float angle = Mathf.Atan2(forward.y, forward.x) * Mathf.Rad2Deg;
-            Quaternion rotation = Quaternion.Euler(0, 0, angle-90f);
+            Quaternion rotation = Quaternion.Euler(0, 0, angle - 90f);
             GameObject tracer = Instantiate(Weapon.Stats.ProjectilePrefab, _muzzlePoint.position, rotation);
 
             BulletMover mover = tracer.GetComponent<BulletMover>();
@@ -226,9 +249,8 @@ public class WeaponController : MonoBehaviour
         Vector3 start = _muzzlePoint.position;
         Vector3 forward = ApplySpread(-_aimOrigin.up);
 
-        // FIXED: Replaced 3D LookRotation with native 2D Z-angle calculation
         float angle = Mathf.Atan2(forward.y, forward.x) * Mathf.Rad2Deg;
-        Quaternion rotation = Quaternion.Euler(0, 0, angle -90f);
+        Quaternion rotation = Quaternion.Euler(0, 0, angle - 90f);
         GameObject projectile = Instantiate(Weapon.Stats.ProjectilePrefab, start, rotation);
 
         Rigidbody2D rb = projectile.GetComponent<Rigidbody2D>();
