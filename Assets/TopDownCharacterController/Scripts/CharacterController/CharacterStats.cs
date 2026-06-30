@@ -9,11 +9,11 @@ public class CharacterStats : ScriptableObject
 
     [Header("Walk")]
     [Tooltip("Maximum walking speed of the character")]
-    public float MaxWalkSpeed = 12.5f;
+    public float MaxWalkSpeed = 3f;
 
     [Tooltip("How quickly the character reaches maximum speed")]
-    public float Acceleration = 5f;
+    public float Acceleration = 10f;
 
     [Tooltip("How quickly the character slows down to a stop")]
-    public float Deceleration = 5f;
+    public float Deceleration = 10f;
 }

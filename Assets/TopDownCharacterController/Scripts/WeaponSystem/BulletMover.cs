@@ -21,4 +21,35 @@ public class BulletMover : MonoBehaviour
             Destroy(gameObject);
         }
     }
+
+    
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        
+        if (collision.CompareTag("Wall") || (collision.transform.parent != null && collision.transform.parent.CompareTag("Wall")))
+        {
+            Destroy(gameObject);
+            return;
+        }
+
+        
+        if (collision.CompareTag("Player"))
+        {
+            Debug.Log(" BULLET HIT THE PLAYER HITBOX: " + collision.gameObject.name);
+
+            
+            Health enemyHealth = collision.GetComponent<Health>();
+            if (enemyHealth == null) enemyHealth = collision.GetComponentInParent<Health>();
+
+            if (enemyHealth != null)
+            {
+                Debug.Log(" FOUND HEALTH SCRIPT! Sending 10 damage to " + collision.gameObject.name);
+                enemyHealth.TakeDamage(10f);
+            }
+            
+
+            Destroy(gameObject);
+        }
+        
+    }
 }

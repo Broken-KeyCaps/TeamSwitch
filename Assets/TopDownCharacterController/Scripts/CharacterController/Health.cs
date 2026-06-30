@@ -1,44 +1,63 @@
+using System.Collections;
 using UnityEngine;
-using Photon.Pun; // 1. Added Photon namespace
+using Photon.Pun;
 
-public class Health : MonoBehaviourPun // 2. Changed to MonoBehaviourPun
+public class Health : MonoBehaviourPun
 {
     public CharacterStats Character;
-
     [SerializeField] private float _health;
+    private bool _isDead = false;
 
     private void Start()
     {
         _health = Character.MaxHealth;
     }
 
-    // This is the public function your bullets will call
     public void TakeDamage(float damage)
     {
-        // 3. Instead of just doing the math locally, we broadcast the damage to ALL players in the room
+        if (_isDead) return;
         photonView.RPC("RPC_TakeDamage", RpcTarget.All, damage);
     }
 
-    // 4. The [PunRPC] tag allows this function to be triggered over the internet
     [PunRPC]
     private void RPC_TakeDamage(float damage)
     {
-        if (_health - damage <= 0f)
+        if (_isDead) return;
+
+        _health -= damage;
+
+        
+        Debug.Log(" " + gameObject.name + " took " + damage + " damage! Remaining Health: " + _health);
+
+        if (_health <= 0f)
         {
+            Debug.Log("dead " + gameObject.name + " HP reached 0! Triggering Death.");
             Die();
-        }
-        else
-        {
-            _health -= damage;
         }
     }
 
     private void Die()
     {
-        // 5. Only the person who owns this player object is allowed to tell the server to destroy it
+        _isDead = true;
+
+        
+        GetComponent<PlayerController>().enabled = false;
+        GetComponent<WeaponController>().enabled = false;
+
+        
+        Animator anim = GetComponent<PlayerController>()._animator;
+        if (anim != null) anim.SetTrigger("Death");
+
         if (photonView.IsMine)
         {
-            PhotonNetwork.Destroy(gameObject);
+            
+            StartCoroutine(DestroyAfterDeath());
         }
+    }
+
+    private IEnumerator DestroyAfterDeath()
+    {
+        yield return new WaitForSeconds(1.5f);
+        PhotonNetwork.Destroy(gameObject);
     }
 }
