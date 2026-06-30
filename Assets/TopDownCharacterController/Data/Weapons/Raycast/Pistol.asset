@@ -1,0 +1,45 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 157c40ea163640b42873c147a0ad6963, type: 3}
+  m_Name: Pistol
+  m_EditorClassIdentifier: 
+  Title: Pistol
+  Description: Standard semi-automatic sidearm.
+  WorldSprite: {fileID: 1998489265, guid: 96105ebdbc880cb42a1eec1162e88642, type: 3}
+  UISprite: {fileID: 21300000, guid: b4fb62f1f58132242b33b2dc39b34b38, type: 3}
+  ShootSound: {fileID: 8300000, guid: 149bdbe8643ff4040b5cb093853510d6, type: 3}
+  Crosshair: {fileID: 21300000, guid: 7b3f68a4bca19aa47830bf861683323e, type: 3}
+  Damage: 20
+  FireRate: 3
+  Distance: 75
+  MinRecoil: 0
+  MaxRecoil: 10
+  RecoilIncreasePerShot: 1
+  RecoilDecreaseSpeed: 4
+  RecoilDecayDelay: 0.3
+  IsAutomatic: 0
+  PelletsPerShot: 1
+  ShotsPerTrigger: 1
+  PierceCount: 1
+  MagazineSize: 12
+  ReloadTime: 1.5
+  IsProjectile: 0
+  ProjectilePrefab: {fileID: 7713103402055621080, guid: b6cd3fe977795a241a0ea7cafb17254d, type: 3}
+  ProjectileSpeed: 80
+  ProjectileLifetime: 5
+  EnemyLayers:
+    serializedVersion: 2
+    m_Bits: 192
+  WallLayers:
+    serializedVersion: 2
+    m_Bits: 256
+  ImpactEffects: {fileID: 11400000, guid: 947a3614bd560fe489cbbe00f48255c5, type: 2}
