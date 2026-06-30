@@ -1,7 +1,8 @@
 using UnityEngine;
+using Photon.Pun; // 1. Added the Photon namespace
 
 [RequireComponent(typeof(Collider2D), typeof(Rigidbody2D))]
-public class PlayerController : MonoBehaviour
+public class PlayerController : MonoBehaviourPun // 2. Changed MonoBehaviour to MonoBehaviourPun
 {
     [Header("Character Data")]
     [SerializeField] private CharacterStats CharacterStats;
@@ -14,15 +15,8 @@ public class PlayerController : MonoBehaviour
 
     private void Awake()
     {
-        if (_rigidbody2D == null)
-        {
-            _rigidbody2D = GetComponent<Rigidbody2D>();
-        }
-
-        if (_bodyCollider == null)
-        {
-            _bodyCollider = GetComponent<Collider2D>();
-        }
+        if (_rigidbody2D == null) _rigidbody2D = GetComponent<Rigidbody2D>();
+        if (_bodyCollider == null) _bodyCollider = GetComponent<Collider2D>();
 
         if (CharacterStats == null)
         {
@@ -33,12 +27,19 @@ public class PlayerController : MonoBehaviour
 
     private void Start()
     {
-        Cursor.visible = false;
+        // Only hide the cursor for OUR local player
+        if (photonView.IsMine)
+        {
+            Cursor.visible = false;
+        }
     }
 
     private void Update()
     {
         if (CharacterStats == null) return;
+
+        // 3. THE MAGIC LOCK: If this is not our local player, completely ignore the movement code below!
+        if (!photonView.IsMine) return;
 
         Movement();
         Turn();
@@ -58,7 +59,7 @@ public class PlayerController : MonoBehaviour
         _rigidbody2D.linearVelocity = Vector2.Lerp(
             _rigidbody2D.linearVelocity,
             targetVelocity,
-            ((input != Vector2.zero) 
+            ((input != Vector2.zero)
                 ? CharacterStats.Acceleration
                 : CharacterStats.Deceleration) * Time.fixedDeltaTime
         );
@@ -71,9 +72,8 @@ public class PlayerController : MonoBehaviour
         Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         mousePos.z = 0f;
 
-        Vector3 direction = mousePos - transform.position;
-        float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
-
-        _bodyRoot.rotation = Quaternion.Euler(0f, 0f, angle);
+        Vector3 lookDir = mousePos - transform.position;
+        float angle = Mathf.Atan2(lookDir.y, lookDir.x) * Mathf.Rad2Deg;
+        _bodyRoot.rotation = Quaternion.Euler(0f, 0f, angle - 90f);
     }
 }

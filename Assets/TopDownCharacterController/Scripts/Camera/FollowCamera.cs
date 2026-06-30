@@ -2,7 +2,9 @@
 
 public class FollowCamera : MonoBehaviour
 {
-    [SerializeField] private GameObject _target;
+    // Made this public so the spawned player can assign itself to it!
+    [HideInInspector] public GameObject target;
+
     [SerializeField] private Vector3 _baseOffset = new Vector3(0, 0, -10);
     [SerializeField] private float _smoothTime = 0.25f;
 
@@ -14,12 +16,13 @@ public class FollowCamera : MonoBehaviour
 
     private void LateUpdate()
     {
-        if (_target == null)
+        // If no target is assigned yet, just wait and do nothing.
+        if (target == null)
         {
             return;
         }
 
-        Vector3 playerPos = _target.transform.position;
+        Vector3 playerPos = target.transform.position;
 
         Vector3 mouseWorld = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         mouseWorld.z = playerPos.z;
