@@ -1,0 +1,45 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 157c40ea163640b42873c147a0ad6963, type: 3}
+  m_Name: MechineGunProjectile
+  m_EditorClassIdentifier: 
+  Title: MachineGun
+  Description: 
+  WorldSprite: {fileID: 1533762884, guid: 96105ebdbc880cb42a1eec1162e88642, type: 3}
+  UISprite: {fileID: 21300000, guid: a1c3c20356d13264090c21e9928c5ef8, type: 3}
+  ShootSound: {fileID: 8300000, guid: 80de4c293acbaf944a3fe3581f928760, type: 3}
+  Crosshair: {fileID: 21300000, guid: 9893fe97fbe7d184da7a3722d10150f1, type: 3}
+  Damage: 10
+  FireRate: 20
+  Distance: 100
+  MinRecoil: 0
+  MaxRecoil: 25
+  RecoilIncreasePerShot: 1
+  RecoilDecreaseSpeed: 4
+  RecoilDecayDelay: 0.3
+  IsAutomatic: 1
+  PelletsPerShot: 1
+  ShotsPerTrigger: 1
+  PierceCount: 3
+  MagazineSize: 40
+  ReloadTime: 2
+  IsProjectile: 1
+  ProjectilePrefab: {fileID: 7713103402055621080, guid: 72268029007c0a144897b3208f58a1a5, type: 3}
+  ProjectileSpeed: 80
+  ProjectileLifetime: 5
+  EnemyLayers:
+    serializedVersion: 2
+    m_Bits: 192
+  WallLayers:
+    serializedVersion: 2
+    m_Bits: 256
+  ImpactEffects: {fileID: 11400000, guid: 947a3614bd560fe489cbbe00f48255c5, type: 2}
