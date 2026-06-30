@@ -164,9 +164,18 @@ public class WeaponController : MonoBehaviour
     private void FireRaycast()
     {
         Vector3 start = _aimOrigin.position;
-        Vector3 forward = ApplySpread(-_aimOrigin.up);
+        start.z = 0f;
+
+        
+        Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        mousePos.z = 0f;
+        Vector3 dirToMouse = (mousePos - start).normalized;
+        Vector3 forward = ApplySpread(dirToMouse);
+        
 
         RaycastHit2D[] hits = Physics2D.RaycastAll(start, forward, Weapon.Stats.Distance);
+
+        
         Vector3 lastHitPoint = start + forward * Weapon.Stats.Distance;
         int pierceCount = 0;
 
@@ -186,10 +195,21 @@ public class WeaponController : MonoBehaviour
             {
                 lastHitPoint = hit.point;
 
-                var health = hit.collider.GetComponent<Health>();
-                if (health != null)
-                    health.TakeDamage(Weapon.Stats.Damage);
+                
+                Health health = hit.collider.GetComponent<Health>();
 
+                
+                if (health == null) health = hit.collider.GetComponentInParent<Health>();
+
+                if (health != null)
+                {
+                    Debug.Log("SUCCESS! Hit " + health.gameObject.name + " and called TakeDamage!");
+                    health.TakeDamage(Weapon.Stats.Damage);
+                }
+                else
+                {
+                    Debug.LogWarning("UH OH! The bullet hit " + hit.collider.gameObject.name + " but NO Health script was found on it or its parents!");
+                }
                 SpawnImpactEffect(hit.collider.gameObject, hit.point);
 
                 pierceCount++;
@@ -247,11 +267,20 @@ public class WeaponController : MonoBehaviour
             return;
 
         Vector3 start = _muzzlePoint.position;
-        Vector3 forward = ApplySpread(-_aimOrigin.up);
+        start.z = 0f;
+
+        
+        Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        mousePos.z = 0f;
+        Vector3 dirToMouse = (mousePos - start).normalized;
+        Vector3 forward = ApplySpread(dirToMouse);
+        
 
         float angle = Mathf.Atan2(forward.y, forward.x) * Mathf.Rad2Deg;
         Quaternion rotation = Quaternion.Euler(0, 0, angle - 90f);
         GameObject projectile = Instantiate(Weapon.Stats.ProjectilePrefab, start, rotation);
+
+        
 
         Rigidbody2D rb = projectile.GetComponent<Rigidbody2D>();
         if (rb != null)
@@ -283,7 +312,7 @@ public class WeaponController : MonoBehaviour
     {
         float distance = _debugRecoilDistance;
         Vector3 start = _aimOrigin.position;
-        Vector3 forward = -_aimOrigin.up;
+        Vector3 forward = _aimOrigin.up;
 
         Debug.DrawLine(start, start + forward * distance, Color.white);
 
