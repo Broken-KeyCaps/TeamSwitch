@@ -65,6 +65,16 @@ public class TeamLobbyManager : MonoBehaviourPunCallbacks
             roomCodeText.text = "Room Code: " + PhotonNetwork.CurrentRoom.Name;
         }
 
+        if (stakeInputField != null && PhotonNetwork.CurrentRoom.CustomProperties.ContainsKey(MIN_STAKE_PROP))
+        {
+            int minStake = (int)PhotonNetwork.CurrentRoom.CustomProperties[MIN_STAKE_PROP];
+            stakeInputField.text = minStake.ToString();
+        }
+
+        //Match name with prefab 
+        PhotonNetwork.Instantiate("Player",Vector3.zero, Quaternion.identity);
+        
+
         EnforcePublicPrivateUI();
 
 
@@ -208,6 +218,8 @@ public class TeamLobbyManager : MonoBehaviourPunCallbacks
     {
         if (PhotonNetwork.IsMasterClient)
             PhotonNetwork.LoadLevel(2);
+
+
     }
     public void JoinRedTeam() { SetPlayerTeam(1); }
     public void JoinBlueTeam() { SetPlayerTeam(2); }

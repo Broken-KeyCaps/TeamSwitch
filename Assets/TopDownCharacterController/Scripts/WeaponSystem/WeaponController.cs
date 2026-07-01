@@ -6,6 +6,8 @@ using Photon.Pun;
 public class WeaponController : MonoBehaviour
 {
     public WeaponInstance Weapon;
+    public enum PlayerState { InLobby, Playing }
+    public PlayerState currentState = PlayerState.Playing;
 
     [Header("Sprite")]
     [SerializeField] private SpriteRenderer _weaponSprite;
@@ -46,8 +48,8 @@ public class WeaponController : MonoBehaviour
     }
 
     private void Start()
-    {
-        
+    { 
+
         if (_view != null && !_view.IsMine)
         {
             if (_crosshairController != null)
@@ -106,7 +108,7 @@ public class WeaponController : MonoBehaviour
 
     public bool CanShoot()
     {
-        return !_isShootingCoroutineRunning && Weapon != null && Weapon.CanShoot();
+        return !_isShootingCoroutineRunning && Weapon != null && Weapon.CanShoot() && currentState == PlayerState.InLobby;
     }
 
     private void UpdateCooldown()

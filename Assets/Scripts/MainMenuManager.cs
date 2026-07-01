@@ -43,8 +43,17 @@ public class MainMenuManager : MonoBehaviourPunCallbacks
         PhotonNetwork.AutomaticallySyncScene = true;
         ShowPanel(loadingPanel);
 
-        Debug.Log("Connecting to Server...");
-        PhotonNetwork.ConnectUsingSettings();
+        // --- ADD THIS CHECK SO WE DON'T CONNECT TWICE ---
+        if (PhotonNetwork.IsConnected)
+        {
+            Debug.Log("Already connected! Joining Lobby directly...");
+            PhotonNetwork.JoinLobby();
+        }
+        else
+        {
+            Debug.Log("Connecting to Server...");
+            PhotonNetwork.ConnectUsingSettings();
+        }
     }
 
     public override void OnConnectedToMaster()

@@ -5,6 +5,9 @@ using Photon.Pun;
 [RequireComponent(typeof(Collider2D), typeof(Rigidbody2D))]
 public class PlayerController : MonoBehaviourPun
 {
+    public enum PlayerState { InLobby, Playing }
+    public PlayerState currentState = PlayerState.Playing;
+
     [Header("Character Data")]
     [SerializeField] private CharacterStats CharacterStats;
 
@@ -53,6 +56,8 @@ public class PlayerController : MonoBehaviourPun
     {
         if (!photonView.IsMine || _isDashing) return;
 
+        if (currentState == PlayerState.InLobby) return;
+
         Move();
         Turn();
 
@@ -61,8 +66,10 @@ public class PlayerController : MonoBehaviourPun
     }
 
     private void Update()
-    {
+    {   
         if (!photonView.IsMine) return;
+
+        if (currentState == PlayerState.InLobby) return;
 
         if (Input.GetKeyDown(KeyCode.Space) && _dashCooldownTimer <= 0f && !_isDashing)
         {
@@ -73,6 +80,10 @@ public class PlayerController : MonoBehaviourPun
         }
     }
 
+    public void SetState(PlayerState newState)
+    {
+        currentState = newState;
+    }
     private void Move()
     {
         Vector2 input = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
